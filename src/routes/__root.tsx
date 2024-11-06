@@ -1,10 +1,8 @@
-import { LOGIN_ROUTES } from '@/lib/constants'
 import { AuthType } from '@/modules/auth/types'
 import { AppShell } from '@mantine/core'
 import { QueryClient } from '@tanstack/react-query'
-import { Outlet, createRootRouteWithContext, redirect } from '@tanstack/react-router'
+import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
-import Cookie from 'js-cookie'
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient

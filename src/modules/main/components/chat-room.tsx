@@ -1,14 +1,14 @@
 import echo from '@/lib/echo'
-import { useGetMessages, useJoinRoomMutation, useRoomsDetailQuery } from '@/modules/main/actions'
+import { useGetMessages, useJoinRoomQuery, useRoomsDetailQuery } from '@/modules/main/actions'
 import { MessageInput } from '@/modules/main/components/MessageInput'
-import { Box, Flex, Loader, Paper, Stack, Text, Title } from '@mantine/core'
+import { Box, Flex, Loader, LoadingOverlay, Paper, Stack, Text, Title } from '@mantine/core'
 import { useWindowScroll } from '@mantine/hooks'
 import { Link } from '@tanstack/react-router'
 import { useEffect } from 'react'
 
 export function ChatRoom({ roomId }: { roomId: string }) {
   const { data } = useRoomsDetailQuery(roomId)
-  const joinMutation = useJoinRoomMutation()
+  const joinRoomMutation = useJoinRoomQuery()
   const { data: messages, isLoading, refetch } = useGetMessages(roomId)
   const [_scroll, scrollTo] = useWindowScroll()
 
@@ -23,8 +23,16 @@ export function ChatRoom({ roomId }: { roomId: string }) {
   }, [messages])
 
   useEffect(() => {
+    joinRoomMutation.mutate(
+      { roomId },
+      {
+        onError: () => {
+          window.location.reload()
+        },
+      },
+    )
     connectWebSocket()
-    joinMutation.mutate(roomId)
+
     return () => {
       echo.leaveChannel('chatroom')
     }
@@ -35,6 +43,7 @@ export function ChatRoom({ roomId }: { roomId: string }) {
       <Title>Chat Room: {data.name}</Title>
 
       <Paper pos="relative">
+        <LoadingOverlay visible={joinRoomMutation.isPending} />
         <Box pb={100}>
           {isLoading ? (
             <Loader />

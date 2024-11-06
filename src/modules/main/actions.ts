@@ -34,10 +34,18 @@ export function useCreateRoomMutation() {
   })
 }
 
-export function useJoinRoomMutation() {
+export function useJoinRoomQuery() {
   return useMutation({
-    mutationFn: async (values: any) => {
-      return await http.post(`chatrooms/${values}/join`)
+    mutationFn: async ({ roomId }: { roomId: string }): Promise<Record<string, any>> => {
+      return await http.post(`chatrooms/${roomId}/join`, roomId)
+    },
+  })
+}
+
+export function useLeaveRoomMutation() {
+  return useMutation({
+    mutationFn: async (roomId: string) => {
+      return await http.post(`chatrooms/${roomId}/leave`)
     },
   })
 }
@@ -53,7 +61,7 @@ export function useGetMessages(roomId: string) {
   })
 }
 
-export function useSendMessageMutation(roomId) {
+export function useSendMessageMutation(roomId: string) {
   return useMutation({
     mutationFn: async (values: any) => {
       return await http.post(`chatrooms/${roomId}/messages`, values)

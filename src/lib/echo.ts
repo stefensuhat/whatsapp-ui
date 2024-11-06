@@ -1,5 +1,5 @@
 import http from '@/lib/http'
-import Cookie from 'js-cookie'
+import { AxiosResponse } from 'axios'
 import Echo from 'laravel-echo'
 import pusher from 'pusher-js'
 
@@ -16,9 +16,9 @@ const echo = new Echo({
   forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
   enabledTransports: ['ws', 'wss'],
   // authEndpoint: `http://localhost:8000/broadcasting/auth`,
-  authorizer: (channel, _options) => {
+  authorizer: (channel: { name: any }, _options: any) => {
     return {
-      authorize: (socketId, callback) => {
+      authorize: (socketId: any, callback: (arg0: boolean, arg1: AxiosResponse<any, any>) => void) => {
         http
           .post('/broadcasting/auth', {
             socket_id: socketId,
@@ -40,6 +40,7 @@ const echo = new Echo({
   // },
 })
 
+// @ts-ignore
 window.Echo = echo
 
 export default echo

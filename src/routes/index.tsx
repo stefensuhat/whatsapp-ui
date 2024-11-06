@@ -1,3 +1,4 @@
+import { useJoinRoomQuery, useLeaveRoomMutation } from '@/modules/main/actions'
 import { ChatRoom } from '@/modules/main/components/chat-room'
 import { CreateRoom } from '@/modules/main/components/create-room'
 import { RoomLists } from '@/modules/main/components/room-lists'
@@ -12,7 +13,15 @@ export const Route = createFileRoute('/')({
 
 function App() {
   const [opened, { toggle }] = useDisclosure(false)
-  const [selectedRoom, setSelectedRoom] = useState<string | null>('01jbzhs7gpk1yyvy7cf6xdf7dq')
+  const [selectedRoom, setSelectedRoom] = useState<string | null>(null)
+
+  const leaveMutation = useLeaveRoomMutation()
+  const joinMutation = useJoinRoomQuery()
+
+  const handleJoinRoomClick = (value: string) => {
+    setSelectedRoom(value)
+    joinMutation.mutate({ roomId: value })
+  }
 
   return (
     <AppShell withBorder={false} header={{ height: 64 }}>
@@ -21,10 +30,22 @@ function App() {
       <AppShell.Main>
         <Container size="sm" m="auto">
           <Flex gap="md" mb="md">
-            {selectedRoom ? <Button>Leave Room</Button> : <Button onClick={toggle}>Create Room</Button>}
+            {selectedRoom ? (
+              <Button
+                onClick={() => {
+                  leaveMutation.mutate(selectedRoom)
+
+                  setSelectedRoom(null)
+                }}
+              >
+                Leave Room
+              </Button>
+            ) : (
+              <Button onClick={toggle}>Create Room</Button>
+            )}
           </Flex>
 
-          {selectedRoom ? <ChatRoom roomId={selectedRoom} /> : <RoomLists onJoinClick={setSelectedRoom} />}
+          {selectedRoom ? <ChatRoom roomId={selectedRoom} /> : <RoomLists onJoinClick={handleJoinRoomClick} />}
           <CreateRoom opened={opened} onClose={toggle} />
         </Container>
       </AppShell.Main>
