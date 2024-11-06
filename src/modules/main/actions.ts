@@ -66,5 +66,10 @@ export function useSendMessageMutation(roomId: string) {
     mutationFn: async (values: any) => {
       return await http.post(`chatrooms/${roomId}/messages`, values)
     },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['messages', 'list', roomId],
+      })
+    },
   })
 }
