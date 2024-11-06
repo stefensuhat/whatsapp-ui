@@ -8,11 +8,6 @@ export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
   auth: AuthType
 }>()({
-  // beforeLoad: ({ context }) => {
-  // if (!context.auth.isAuthenticated || !!Cookie.get('access-token')) {
-  //   throw redirect({ to: LOGIN_ROUTES })
-  // }
-  // },
   component: RootComponent,
 })
 

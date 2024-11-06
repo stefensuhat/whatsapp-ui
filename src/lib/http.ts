@@ -32,12 +32,9 @@ fetch.interceptors.request.use(
       return fetch
         .get('/sanctum/csrf-cookie')
         .then(() => {
-          console.log('csrf: ', config)
-
           return config
         })
-        .catch((error) => {
-          console.log('setting response error: ', error)
+        .catch((_error) => {
           return config
         })
     }
